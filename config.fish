@@ -7,10 +7,10 @@ function hostname_suffix
 end
 
 function git_prompt_info
-    set -l branches (command git branch 2> /dev/null)
+    set -l branches (command git branch 2> /dev/null); or return
     set -l ref (command git symbolic-ref HEAD 2> /dev/null)
     if test -z ref
-        set -l ref (command git rev-parse --short HEAD 2> /dev/null)
+        set -l ref (command git rev-parse --short HEAD 2> /dev/null); or return
     end
 
     if test -z ref
@@ -18,19 +18,14 @@ function git_prompt_info
     end
 
     if test "$branches" != ""
-        set -l ref (command echo $branches | grep '*' | sed 's/^\* //' | sed 's/(.*detached.* \(.*\))/\1/' 2> /dev/null)
+        set -l ref (command echo $branches | grep '*' | sed 's/^\* //' | sed 's/(.*detached.* \(.*\))/\1/' 2> /dev/null); or return
     end
     printf '%s%s %s%s' (set_color 424242) (string replace 'refs/heads/' '' $ref) (set_color normal) (parse_git_dirty)
 end
 
 function parse_git_dirty
-    set -l GIT_STATUS ''
-    if test "$DISABLE_UNTRACKED_FILES_DIRTY" = "true"
-        set -l GIT_STATUS (command git status -s -uno 2> /dev/null | tail -n1)
-    else
-        set -l GIT_STATUS (command git status -s 2> /dev/null | tail -n1)
-    end
-    if test -n $GIT_STATUS
+    set -l GIT_STATUS (command git status -s -uno 2> /dev/null | tail -n1)
+    if test -n "$GIT_STATUS"
         set_color red
         echo ✗
         set_color normal
@@ -57,7 +52,12 @@ function fish_right_prompt
 end
 
 # setup python virtual env
-eval (python -m virtualfish compat_aliases)
+# eval (python -m virtualfish compat_aliases)
+set -g VIRTUALFISH_VERSION 1.0.5
+set -g VIRTUALFISH_PYTHON_EXEC /usr/bin/python
+. /Library/Python/2.7/site-packages/virtualfish/virtual.fish
+. /Library/Python/2.7/site-packages/virtualfish/compat_aliases.fish
+emit virtualfish_did_setup_plugins
 
 # user path
 set fish_user_paths /usr/local/sbin $HOME/Workspace/app/bin $HOME/.cargo/bin $fish_user_paths
