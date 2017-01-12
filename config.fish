@@ -7,24 +7,27 @@ function hostname_suffix
 end
 
 function git_prompt_info
-    set -l branches (command git branch 2> /dev/null); or return
-    set -l ref (command git symbolic-ref HEAD 2> /dev/null)
+    set branches (command git branch 2> /dev/null); or return
+    set ref (command git symbolic-ref HEAD 2> /dev/null)
     if test -z ref
-        set -l ref (command git rev-parse --short HEAD 2> /dev/null); or return
+        set ref (command git rev-parse --short HEAD 2> /dev/null); or return
     end
 
     if test -z ref
         return
     end
 
-    if test "$branches" != ""
-        set -l ref (command echo $branches | grep '*' | sed 's/^\* //' | sed 's/(.*detached.* \(.*\))/\1/' 2> /dev/null); or return
+    for br in $branches
+        if echo $br | grep '*' > /dev/null
+            set ref (command echo $br | sed 's/^\* //' | sed 's/(.*detached.* \(.*\))/\1/' 2> /dev/null); or return
+            break
+        end
     end
     printf '%s%s %s%s' (set_color 424242) (string replace 'refs/heads/' '' $ref) (set_color normal) (parse_git_dirty)
 end
 
 function parse_git_dirty
-    set -l GIT_STATUS (command git status -s -uno 2> /dev/null | tail -n1)
+    set GIT_STATUS (command git status -s -uno 2> /dev/null | tail -n1)
     if test -n "$GIT_STATUS"
         set_color red
         echo ✗
