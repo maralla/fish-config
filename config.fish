@@ -23,7 +23,7 @@ function git_prompt_info
             break
         end
     end
-    printf '%s%s %s%s' (set_color 424242) (string replace 'refs/heads/' '' $ref) (set_color normal) (parse_git_dirty)
+    printf '%s %s %s%s' (set_color 424242) (string replace 'refs/heads/' '' $ref) (set_color normal) (parse_git_dirty)
 end
 
 function parse_git_dirty
@@ -40,7 +40,7 @@ function parse_git_dirty
 end
 
 function fish_prompt
-    printf '%s%s%s%s%s%s %s\n%s➡ %s' \
+    printf '%s%s%s%s%s%s%s\n%s➡ %s' \
         (set_color 8BC34A) (hostname_suffix) (set_color normal) \
         (set_color FF9800) (prompt_pwd) (set_color normal) \
         (git_prompt_info) \
@@ -58,9 +58,32 @@ end
 # eval (python -m virtualfish compat_aliases)
 set -g VIRTUALFISH_VERSION 1.0.5
 set -g VIRTUALFISH_PYTHON_EXEC /usr/bin/python
+set -g VIRTUALFISH_HOME $HOME/.dotfiles/virtualenvs
 . /Library/Python/2.7/site-packages/virtualfish/virtual.fish
 . /Library/Python/2.7/site-packages/virtualfish/compat_aliases.fish
 emit virtualfish_did_setup_plugins
 
 # user path
 set fish_user_paths /usr/local/sbin $HOME/Workspace/app/bin $HOME/.cargo/bin $fish_user_paths
+
+# pyenv
+export PYENV_ROOT=/usr/local/var/pyenv
+# status --is-interactive; and source (pyenv init -|psub)
+setenv PATH '/usr/local/var/pyenv/shims' $PATH
+setenv PYENV_SHELL fish
+# . '/usr/local/Cellar/pyenv/1.0.7/libexec/../completions/pyenv.fish'
+# command pyenv rehash 2>/dev/null
+function pyenv
+  set command $argv[1]
+  set -e argv[1]
+  switch "$command"
+  case rehash shell
+    . (pyenv "sh-$command" $argv|psub)
+  case '*'
+    command pyenv "$command" $argv
+  end
+end
+
+# set locale
+setenv LC_ALL en_US.UTF-8
+setenv LANG en_US.UTF-8
