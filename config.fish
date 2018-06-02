@@ -2,7 +2,7 @@ set -g fish_prompt_pwd_dir_length 0
 
 function hostname_suffix
     if [ "$TMUX" != "" ]
-        echo 'tmux '
+        echo '@tmux '
     end
 end
 
@@ -40,11 +40,10 @@ function parse_git_dirty
 end
 
 function fish_prompt
-    printf '%s%s%s%s%s%s%s\n%s➡ %s' \
-        (set_color 8BC34A) (hostname_suffix) (set_color normal) \
-        (set_color FF9800) (prompt_pwd) (set_color normal) \
-        (git_prompt_info) \
-        (set_color 607D8B) (set_color normal)
+    printf "%s%s%s" (set_color 8BC34A) (hostname_suffix) (set_color normal)
+    printf "%s%s%s" (set_color FF9800) (prompt_pwd) (set_color normal)
+    printf "%s" (git_prompt_info)
+    printf "\n%s\uf021%s " (set_color 607D8B) (set_color normal)
 end
 
 function fish_right_prompt
@@ -69,8 +68,8 @@ set fish_user_paths /usr/local/sbin $HOME/Workspace/app/bin $HOME/.cargo/bin $fi
 # pyenv
 export PYENV_ROOT=/usr/local/var/pyenv
 # status --is-interactive; and source (pyenv init -|psub)
-setenv PATH '/usr/local/var/pyenv/shims' $PATH
-setenv PYENV_SHELL fish
+set PATH '/usr/local/var/pyenv/shims' $PATH
+set PYENV_SHELL fish
 # . '/usr/local/Cellar/pyenv/1.0.7/libexec/../completions/pyenv.fish'
 # command pyenv rehash 2>/dev/null
 function pyenv
@@ -85,5 +84,5 @@ function pyenv
 end
 
 # set locale
-setenv LC_ALL en_US.UTF-8
-setenv LANG en_US.UTF-8
+set LC_ALL en_US.UTF-8
+set LANG en_US.UTF-8
