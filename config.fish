@@ -55,7 +55,7 @@ end
 
 # setup python virtual env
 # eval (python -m virtualfish compat_aliases)
-set -g VIRTUALFISH_VERSION 1.0.5
+set -g VIRTUALFISH_VERSION 1.0.6
 set -g VIRTUALFISH_PYTHON_EXEC /usr/bin/python
 set -g VIRTUALFISH_HOME $HOME/.dotfiles/virtualenvs
 . /Library/Python/2.7/site-packages/virtualfish/virtual.fish
@@ -86,3 +86,6 @@ end
 # set locale
 set LC_ALL en_US.UTF-8
 set LANG en_US.UTF-8
+
+# Alias
+alias g=git
