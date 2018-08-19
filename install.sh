@@ -13,10 +13,11 @@ test -d $FISH && mv $FISH $FISH-bak-$date
 git clone https://github.com/maralla/fish-config.git $FISH
 
 # install fisher
-curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs git.io/fisher
+curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://raw.githubusercontent.com/fisherman/fisherman/master/fisher.fish
 
 # install plugins
 fisher up
 
+# Rely on py2 virtualenv
 # install python virtualenv helpers
-pip install virtualfish
+$HOME/.dotfiles/virtualenvs/py2/bin/pip install virtualfish
