@@ -62,24 +62,32 @@ set -g VIRTUALFISH_HOME $HOME/.dotfiles/virtualenvs
 . $HOME/.dotfiles/virtualenvs/py2/lib/python2.7/site-packages/virtualfish/compat_aliases.fish
 emit virtualfish_did_setup_plugins
 
+set -l bin_path /usr/local/sbin \
+                $HOME/Workspace/app/bin \
+                $HOME/.cargo/bin \
+                /usr/local/var/pyenv/shims
+
 # user path
-set fish_user_paths /usr/local/sbin $HOME/Workspace/app/bin $HOME/.cargo/bin $fish_user_paths
+for path in $bin_path
+    if test -d $path
+        set PATH $path $PATH
+    end
+end
 
 # pyenv
 export PYENV_ROOT=/usr/local/var/pyenv
 # status --is-interactive; and source (pyenv init -|psub)
-set PATH '/usr/local/var/pyenv/shims' $PATH
 set PYENV_SHELL fish
 # . '/usr/local/Cellar/pyenv/1.0.7/libexec/../completions/pyenv.fish'
 # command pyenv rehash 2>/dev/null
 function pyenv
-  set command $argv[1]
-  set -e argv[1]
-  switch "$command"
+    set command $argv[1]
+    set -e argv[1]
+    switch "$command"
   case rehash shell
-    . (pyenv "sh-$command" $argv|psub)
+      . (pyenv "sh-$command" $argv|psub)
   case '*'
-    command pyenv "$command" $argv
+      command pyenv "$command" $argv
   end
 end
 
@@ -89,3 +97,6 @@ set LANG en_US.UTF-8
 
 # Alias
 alias g=git
+
+# direnv
+eval (direnv hook fish)
