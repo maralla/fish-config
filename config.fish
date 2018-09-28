@@ -70,7 +70,7 @@ set -l bin_path /usr/local/sbin \
 # user path
 for path in $bin_path
     if test -d $path
-        set PATH $path $PATH
+        set PATH $PATH $path
     end
 end
 
