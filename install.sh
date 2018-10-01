@@ -16,7 +16,7 @@ git clone https://github.com/maralla/fish-config.git $FISH
 curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://raw.githubusercontent.com/fisherman/fisherman/master/fisher.fish
 
 # install plugins
-fisher up
+fisher
 
 # Rely on py2 virtualenv
 # install python virtualenv helpers

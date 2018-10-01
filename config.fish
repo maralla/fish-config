@@ -68,10 +68,16 @@ set -l bin_path /usr/local/sbin \
                 /usr/local/var/pyenv/shims
 
 # user path
-for path in $bin_path
-    if test -d $path
-        set PATH $PATH $path
+if [ "$TMUX" = "" ]
+    set -U __builtin_path $PATH
+    for p in $bin_path
+        if test -d $p
+            set -U __extra_path $__extra_path $p
+        end
     end
+    set PATH $PATH $__extra_path
+else
+    set PATH $__builtin_path $__extra_path
 end
 
 # pyenv
