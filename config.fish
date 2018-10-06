@@ -40,8 +40,8 @@ function parse_git_dirty
 end
 
 function fish_prompt
-    printf "%s%s%s" (set_color 8BC34A) (hostname_suffix) (set_color normal)
-    printf "%s%s%s" (set_color FF9800) (prompt_pwd) (set_color normal)
+    printf "%s%s%s" (set_color 424242) (hostname_suffix) (set_color normal)
+    printf "%s%s%s" (set_color bb4d00) (prompt_pwd) (set_color normal)
     printf "%s" (git_prompt_info)
     printf "\n%s\uf021%s " (set_color 607D8B) (set_color normal)
 end
@@ -70,6 +70,7 @@ set -l bin_path /usr/local/sbin \
 # user path
 if [ "$TMUX" = "" ]
     set -U __builtin_path $PATH
+    set -e __extra_path
     for p in $bin_path
         if test -d $p
             set -U __extra_path $__extra_path $p
