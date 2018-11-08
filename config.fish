@@ -48,8 +48,9 @@ end
 
 function fish_right_prompt
     if test "$VIRTUAL_ENV" != ""
-        printf '(env: %s%s%s)' \
-            (set_color -o 4CAF50) (basename $VIRTUAL_ENV) (set_color normal)
+        printf '%senv:%s %s%s%s' \
+           (set_color 424242) (set_color normal) (set_color -o 607D8B) \
+           (basename $VIRTUAL_ENV) (set_color normal)
     end
 end
 
