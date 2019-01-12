@@ -1,3 +1,14 @@
+# Load configurable variables.
+set -l var_file ~/.config/fish/vars.fish
+if test -e $var_file
+    . $var_file
+end
+
+function get_custom_var
+    set -l name __var_$argv[1]
+    echo $$name
+end
+
 set -g fish_prompt_pwd_dir_length 0
 
 function hostname_suffix
@@ -54,15 +65,6 @@ function fish_right_prompt
     end
 end
 
-# setup python virtual env
-# eval (python -m virtualfish compat_aliases)
-set -g VIRTUALFISH_VERSION 1.0.6
-set -g VIRTUALFISH_PYTHON_EXEC $HOME/.dotfiles/virtualenvs/py2/bin/python
-set -g VIRTUALFISH_HOME $HOME/.dotfiles/virtualenvs
-. $HOME/.dotfiles/virtualenvs/py2/lib/python2.7/site-packages/virtualfish/virtual.fish
-. $HOME/.dotfiles/virtualenvs/py2/lib/python2.7/site-packages/virtualfish/compat_aliases.fish
-emit virtualfish_did_setup_plugins
-
 set -l bin_path /usr/local/sbin \
                 $HOME/Workspace/app/bin \
                 $HOME/.cargo/bin \
@@ -70,16 +72,11 @@ set -l bin_path /usr/local/sbin \
 
 # user path
 if [ "$TMUX" = "" ]
-    set -U __builtin_path $PATH
-    set -e __extra_path
     for p in $bin_path
         if test -d $p
-            set -U __extra_path $__extra_path $p
+            set -x PATH $PATH $p
         end
     end
-    set PATH $PATH $__extra_path
-else
-    set PATH $__builtin_path $__extra_path
 end
 
 # pyenv
@@ -109,3 +106,22 @@ alias g=git
 
 # direnv
 eval (direnv hook fish)
+
+function proxy
+    switch $argv[1]
+    case "on"
+        set -l hp (get_custom_var http_proxy) http://localhost:1235
+        set -l hsp (get_custom_var https_proxy) http://localhost:1235
+        set -gx http_proxy $hp[1]
+        set -gx https_proxy $hsp[1]
+        set -gx no_proxy (get_custom_var no_proxy)
+    case "off"
+        set -e http_proxy
+        set -e https_proxy
+        set -e no_proxy
+    end
+end
+
+if [ (uname -s) = "Linux" ]
+    alias pbcopy="env DISPLAY=:0 xclip -selection clipboard"
+end

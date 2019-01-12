@@ -17,7 +17,3 @@ curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://raw.githubus
 
 # install plugins
 fisher
-
-# Rely on py2 virtualenv
-# install python virtualenv helpers
-$HOME/.dotfiles/virtualenvs/py2/bin/pip install virtualfish
