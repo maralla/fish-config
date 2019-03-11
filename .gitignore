@@ -2,3 +2,4 @@ completions
 conf.d
 fishd.*
 functions
+vars.fish
