@@ -128,3 +128,8 @@ end
 if [ (uname -s) = "Linux" ]
     alias pbcopy="env DISPLAY=:0 xclip -selection clipboard"
 end
+
+# reload fish config
+function reload
+    source $HOME/.config/fish/config.fish
+end
