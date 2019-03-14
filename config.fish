@@ -6,7 +6,12 @@ end
 
 function get_custom_var
     set -l name __var_$argv[1]
-    echo $$name
+    set -l value $$name
+    if [ "$value" = "" ]
+        echo $argv[2]
+    else
+        echo $value
+    end
 end
 
 set -g fish_prompt_pwd_dir_length 0
@@ -110,10 +115,8 @@ eval (direnv hook fish)
 function proxy
     switch $argv[1]
     case "on"
-        set -l hp (get_custom_var http_proxy) http://localhost:1235
-        set -l hsp (get_custom_var https_proxy) http://localhost:1235
-        set -gx http_proxy $hp[1]
-        set -gx https_proxy $hsp[1]
+        set -gx http_proxy (get_custom_var http_proxy http://localhost:1235)
+        set -gx https_proxy (get_custom_var https_proxy http://localhost:1235)
         set -gx no_proxy (get_custom_var no_proxy)
     case "off"
         set -e http_proxy
