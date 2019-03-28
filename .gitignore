@@ -3,3 +3,4 @@ conf.d
 fishd.*
 functions
 vars.fish
+fish_variables
