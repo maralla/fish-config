@@ -106,6 +106,9 @@ set LC_ALL en_US.UTF-8
 set LANG en_US.UTF-8
 set -x EDITOR vim
 
+# Fish color scheme
+set fish_color_command 2196f3
+
 # Alias
 alias g=git
 
@@ -125,8 +128,11 @@ function proxy
     end
 end
 
-if [ (uname -s) = "Linux" ]
+switch (uname -s)
+case "Linux"
     alias pbcopy="env DISPLAY=:0 xclip -selection clipboard"
+case "Darwin"
+    set -gx ICLOUD $HOME/Library/Mobile\ Documents/com\~apple\~CloudDocs/
 end
 
 # reload fish config
