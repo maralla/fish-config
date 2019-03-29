@@ -74,11 +74,10 @@ set -l bin_path /usr/local/sbin \
                 $HOME/Workspace/app/bin \
                 $HOME/.cargo/bin \
                 /usr/local/var/pyenv/shims
-
 # user path
-if [ "$TMUX" = "" ]
-    for p in $bin_path
-        if test -d $p
+for p in $bin_path
+    if test -d $p
+        if not contains $p $PATH
             set -x PATH $PATH $p
         end
     end
