@@ -101,8 +101,8 @@ function pyenv
 end
 
 # set locale
-set LC_ALL en_US.UTF-8
-set LANG en_US.UTF-8
+# set LC_ALL en_US.UTF-8
+# set LANG en_US.UTF-8
 set -x EDITOR vim
 
 # Fish color scheme
