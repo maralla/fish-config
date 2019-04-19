@@ -114,6 +114,21 @@ alias g=git
 # direnv
 eval (direnv hook fish)
 
+switch (uname -s)
+case "Linux"
+    alias pbcopy="env DISPLAY=:0 xclip -selection clipboard"
+    set -l brew_path /home/linuxbrew/.linuxbrew/bin
+    if not contains $brew_path $PATH
+        set -x PATH $PATH $brew_path
+    end
+case "Darwin"
+    set -gx ICLOUD $HOME/Library/Mobile\ Documents/com\~apple\~CloudDocs/
+end
+
+##########################################
+#            Utility functions           #
+##########################################
+
 function proxy
     switch $argv[1]
     case "on"
@@ -127,14 +142,17 @@ function proxy
     end
 end
 
-switch (uname -s)
-case "Linux"
-    alias pbcopy="env DISPLAY=:0 xclip -selection clipboard"
-case "Darwin"
-    set -gx ICLOUD $HOME/Library/Mobile\ Documents/com\~apple\~CloudDocs/
-end
-
 # reload fish config
 function reload
     source $HOME/.config/fish/config.fish
+end
+
+function gitprivate -d "Apply private git configs"
+    if test -z "$argv[1]"
+        echo "Usage: gitprivate <gpg_key_id>" 1>&2
+        return 1
+    end
+    git config user.name maralla
+    git config user.email maralla.ai@gmail.com
+    git config user.signingkey $argv[1]
 end
