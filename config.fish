@@ -1,7 +1,8 @@
+set -gx FISH_CONFIG_DIR $HOME/.config/fish
+
 # Load configurable variables.
-set -l var_file ~/.config/fish/vars.fish
-if test -e $var_file
-    . $var_file
+if test -e $FISH_CONFIG_DIR/vars.fish
+    . $FISH_CONFIG_DIR/vars.fish
 end
 
 function get_custom_var
@@ -155,4 +156,8 @@ function gitprivate -d "Apply private git configs"
     git config user.name maralla
     git config user.email maralla.ai@gmail.com
     git config user.signingkey $argv[1]
+end
+
+if test -e $FISH_CONFIG_DIR/local.fish
+    . $FISH_CONFIG_DIR/local.fish
 end
