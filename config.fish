@@ -18,8 +18,15 @@ end
 set -g fish_prompt_pwd_dir_length 0
 
 function hostname_suffix
+    set hname ''
+    if [ "$SSH_CONNECTION" != "" ]
+        set hname [ssh (hostname)] ''
+    end
     if [ "$TMUX" != "" ]
-        echo '@tmux '
+        set hname "$hname@tmux "
+    end
+    if [ "$hname" != "" ]
+        echo $hname
     end
 end
 
