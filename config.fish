@@ -1,4 +1,5 @@
 set -gx FISH_CONFIG_DIR $HOME/.config/fish
+set -g fish_greeting
 
 # Load configurable variables.
 if test -e $FISH_CONFIG_DIR/vars.fish
@@ -31,23 +32,13 @@ function hostname_suffix
 end
 
 function git_prompt_info
-    set branches (command git branch 2> /dev/null); or return
-    set ref (command git symbolic-ref HEAD 2> /dev/null)
-    if test -z ref
-        set ref (command git rev-parse --short HEAD 2> /dev/null); or return
-    end
+    set ref (git symbolic-ref -q --short HEAD 2> /dev/null; or git describe --tags --exact-match 2> /dev/null; or git rev-parse --short HEAD 2> /dev/null)
 
-    if test -z ref
+    if test -z "$ref"
         return
     end
 
-    for br in $branches
-        if echo $br | grep '*' > /dev/null
-            set ref (command echo $br | sed 's/^\* //' | sed 's/(.*detached.* \(.*\))/\1/' 2> /dev/null); or return
-            break
-        end
-    end
-    printf '%s %s %s%s' (set_color 424242) (string replace 'refs/heads/' '' $ref) (set_color normal) (parse_git_dirty)
+    printf '%s %s %s%s' (set_color 424242) (echo $ref) (set_color normal) (parse_git_dirty)
 end
 
 function parse_git_dirty
@@ -80,8 +71,7 @@ end
 
 set -l bin_path /usr/local/sbin \
                 $HOME/Workspace/app/bin \
-                $HOME/.cargo/bin \
-                /usr/local/var/pyenv/shims
+                $HOME/.cargo/bin
 # user path
 for p in $bin_path
     if test -d $p
@@ -89,23 +79,6 @@ for p in $bin_path
             set -x PATH $PATH $p
         end
     end
-end
-
-# pyenv
-export PYENV_ROOT=/usr/local/var/pyenv
-# status --is-interactive; and source (pyenv init -|psub)
-set PYENV_SHELL fish
-# . '/usr/local/Cellar/pyenv/1.0.7/libexec/../completions/pyenv.fish'
-# command pyenv rehash 2>/dev/null
-function pyenv
-    set command $argv[1]
-    set -e argv[1]
-    switch "$command"
-  case rehash shell
-      . (pyenv "sh-$command" $argv|psub)
-  case '*'
-      command pyenv "$command" $argv
-  end
 end
 
 # set locale
@@ -118,9 +91,13 @@ set fish_color_command 2196f3
 
 # Alias
 alias g=git
+alias vimrc="vim $HOME/.vim/vimrc"
+alias gostatic="env CGO_ENABLED=0 go build -ldflags '-w -extldflags \"-static\"'"
 
 # direnv
-eval (direnv hook fish)
+if type -q direnv
+    eval (direnv hook fish)
+end
 
 switch (uname -s)
 case "Linux"
@@ -129,6 +106,7 @@ case "Linux"
     if not contains $brew_path $PATH
         set -x PATH $PATH $brew_path
     end
+    set -gx SSH_AUTH_SOCK /var/run/user/(id -u)/keyring/ssh
 case "Darwin"
     set -gx ICLOUD $HOME/Library/Mobile\ Documents/com\~apple\~CloudDocs/
 end
@@ -146,6 +124,8 @@ function proxy
     case "off"
         set -e http_proxy
         set -e https_proxy
+        set -e HTTPS_PROXY
+        set -e HTTP_PROXY
         set -e no_proxy
     end
 end
