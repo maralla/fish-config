@@ -58,7 +58,7 @@ function fish_prompt
     printf "%s%s%s" (set_color 424242) (hostname_suffix) (set_color normal)
     printf "%s%s%s" (set_color bb4d00) (prompt_pwd) (set_color normal)
     printf "%s" (git_prompt_info)
-    printf "\n%s\uf021%s " (set_color 607D8B) (set_color normal)
+    printf "\n%s→%s " (set_color 607D8B) (set_color normal)
 end
 
 function fish_right_prompt
